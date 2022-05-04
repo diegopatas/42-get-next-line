@@ -18,7 +18,7 @@ Aliases:
 
 - First, delete your public key (You don't need to, but let's start from the begining).
 
-Peek 2022-05-04 10-20.gif
+![](https://github.com/diegopatas/42-get-next-line/blob/main/Peek%202022-05-04%2010-20.gif)
 
 - Generate a new pair of SSH key, a public and a private key[^1] [^2]. Use the following command. Don't set a password in any step.
 
