@@ -6,27 +6,39 @@
 /*   By: ddiniz <ddiniz@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 21:42:25 by ddiniz            #+#    #+#             */
-/*   Updated: 2022/05/04 22:24:40 by ddiniz           ###   ########.fr       */
+/*   Updated: 2022/05/05 20:37:41 by ddiniz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fcntl.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include "get_next_line.h"
 
 char	*get_next_line(int fd)
 {
-	char	*buff[BUFFER_SIZE];
+	char	buff[BUFFER_SIZE];
 	char	*str_res;
-	char	*str_aux;
-	ssize_t	aux;
+	size_t	id;
+	size_t	len;
 
-	aux = read(fd, buff, BUFFER_SIZE);
-	str_res = (char *)malloc();
-	while (buff[] != '\n' && buff[] != '\0')
+	read(fd, (void *)buff, BUFFER_SIZE);
+	len = 0;
+	id = 0;
+	while (buff[id] != '\n' && id < BUFFER_SIZE)
 	{
-		len = ft_strlen(buff[]);
-		str_aux = (char *)malloc((len + 1) * sizeof(char));
-		ft_strlcpy(str_aux, buff, tamanho);
-
+		len++;
+		id++;
 	}
+	str_res = (char *)malloc((len + 1) * sizeof(char));
+	if (!str_res)
+		return (0);
+	id = 0;
+	while (len)
+	{
+		str_res[id] = buff[id];
+		id++;
+		len--;
+	}
+	str_res[id] = '\0';
+	return (str_res);
 }
