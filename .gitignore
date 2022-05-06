@@ -1,0 +1,8 @@
+*.md
+test*
+Makefile*
+*test*
+/unittest
+*.out
+main*
+unittest*
