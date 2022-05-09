@@ -6,19 +6,13 @@
 /*   By: ddiniz <ddiniz@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 21:42:25 by ddiniz            #+#    #+#             */
-/*   Updated: 2022/05/07 23:23:07 by ddiniz           ###   ########.fr       */
+/*   Updated: 2022/05/08 20:45:45 by ddiniz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <unistd.h>
 #include "get_next_line.h"
-
-void	ft_verify_eol(char ch)
-{
-	if (ch == '\n' || ch == '\0')
-		return (NULL);
-}
 
 static size_t	ft_strlen(const char *str)
 {
@@ -35,14 +29,14 @@ static size_t	ft_strlen(const char *str)
 
 static void	ft_strlcpy(const char *dest, const char *src, const size_t size)
 {
-	while (size > 1)
+	while (size > 0)
 	{
-		*dest = *src;
+		*(char *)dest = *(char *)src;
 		dest++;
 		src++;
 		size--;
 	}
-	*dest = '\0';
+	*(char *)dest = '\0';
 }
 
 char	*ft_strjoin(const char *dest, const char *src)
@@ -53,18 +47,18 @@ char	*ft_strjoin(const char *dest, const char *src)
 
 	total_size = ft_strlen(dest) + ft_strlen(src) + 1;
 	join = (char *)malloc(total_size * sizeof(char));
-	join_start = join;
 	if (!join)
 		return (0);
+	join_start = join;
 	while (*dest)
 	{
-		*join = *dest;
+		*join = *(char *)dest;
 		dest++;
 		join++;
 	}
 	while (*src)
 	{
-		*join = *src;
+		*join = *(char *)src;
 		src++;
 		join++;
 	}
@@ -72,6 +66,16 @@ char	*ft_strjoin(const char *dest, const char *src)
 	return (join_start);
 }
 
+void	ft_save_info(char *buff, size_t index, char *str, size_t len)
+{
+	char	*aux;
+
+	aux = (char *)malloc((len + 2) * sizeof(char));
+	ft_strlcpy(aux, buff[index], (len + 1));
+	str = ft_strjoin(str, aux);
+	free(aux);
+	aux = NULL;
+}
 
 char	*get_next_line(int fd)
 {
@@ -80,35 +84,29 @@ char	*get_next_line(int fd)
 	static size_t	id_scan;
 	static size_t	id_start;
 	static char		*str_line;
-	static char		*str_aux;
 
-	//VERIFY SCANNING
-	if (id_scan >= BUFFER_SIZE - 1 || buff == NULL)
+	if (id_scan == 0 || id_scan >= BUFFER_SIZE - 1)
 	{
 		read(fd, buff, BUFFER_SIZE);
 		id_scan = 0;
 	}
-
-	// VERIFY END OF LINE OR FILE
-	ft_verify_eol(buff[id_scan]);
-
-	//BUILD LINE
 	id_start = id_scan;
 	while (id_scan < BUFFER_SIZE)
 	{
-		while (buff[id_scan] != '\n' && buff[id_scan] != '\0')
+		if (buff[id_scan] == '\n' || buff[id_scan] == '\0')
 		{
-			str_aux = (char *)malloc((id_scan - id_start + 1) * sizeof(char));
-			ft_strlcpy(str_aux, buff[id_start], (id_scan - id_start + 1));
-			str_line = ft_strjoin(str_line, str_aux);
-			free(str_aux);
-			str_aux = NULL;
+			ft_save_info(buff, id_start, str_line, (id_scan - id_start - 1));
 			id_scan++;
+			break;
 		}
-		read(fd, buff, BUFFER_SIZE);
-		id_scan = 0;
+		else if (id_scan == BUFFER_SIZE - 1)
+		{
+			ft_save_info(buff, id_start, str_line, (id_scan - id_start));
+			read(fd, buff, BUFFER_SIZE);
+			id_scan = 0;
+		}
+		else
+			id_scan++;
 	}
-
-	//RETURN THE LINE
 	return (str_line);
 }
