@@ -6,7 +6,7 @@
 /*   By: ddiniz <ddiniz@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 22:32:15 by ddiniz            #+#    #+#             */
-/*   Updated: 2022/05/05 20:30:53 by ddiniz           ###   ########.fr       */
+/*   Updated: 2022/05/09 21:47:22 by ddiniz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@
 #  define BUFFER_SIZE 256
 # endif
 
+#include <stddef.h>
+
+size_t	ft_strlen(const char *str);
+void	ft_cpylstr(const char *dest, const char *src, const size_t size);
+char	*ft_joinstr(const char *dest, const char *src);
 char	*get_next_line(int fd);
 
 #endif
