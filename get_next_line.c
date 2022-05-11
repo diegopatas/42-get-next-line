@@ -6,7 +6,7 @@
 /*   By: ddiniz <ddiniz@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 21:42:25 by ddiniz            #+#    #+#             */
-/*   Updated: 2022/05/09 22:44:38 by ddiniz           ###   ########.fr       */
+/*   Updated: 2022/05/10 23:41:05 by ddiniz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,23 @@
 
 char	*get_next_line(int fd)
 {
-	// VAR DECLARATION
 	static char		buff[BUFFER_SIZE];
 	static size_t	id_scan;
 	static size_t	id_start;
-	static char		*line;
-	static char		*aux;
+	char			*line;
+	char			*aux;
 
 	line = "";
+	aux = line;
 	if (id_scan == 0 || id_scan >= BUFFER_SIZE - 1)
 	{
-		read(fd, buff, BUFFER_SIZE);
+		if (read(fd, buff, BUFFER_SIZE) == -1)
+			return (NULL);
 		id_scan = 0;
 	}
 	id_start = id_scan;
+	if (buff[id_scan++] == '\n')
+		return ("\n");
 	while (id_scan < BUFFER_SIZE)
 	{
 		if (buff[id_scan] == '\n') //first char == '\n': ok; next char == '\n': ok
@@ -40,7 +43,7 @@ char	*get_next_line(int fd)
 			free(aux);
 			aux = NULL;
 			id_scan++;
-			break;
+			break ;
 		}
 		else if (id_scan == BUFFER_SIZE - 1)
 		{
@@ -49,7 +52,7 @@ char	*get_next_line(int fd)
 			line = ft_joinstr(line, aux);
 			free(aux);
 			aux = NULL;
-			read(fd, buff, BUFFER_SIZE); //return -1 and return 0
+			read(fd, buff, BUFFER_SIZE);
 			id_scan = 0;
 		}
 		else
