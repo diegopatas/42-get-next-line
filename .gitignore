@@ -7,3 +7,4 @@ Makefile*
 main*
 unittest*
 gnl_v*
+*.txt
