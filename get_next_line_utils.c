@@ -6,60 +6,64 @@
 /*   By: ddiniz <ddiniz@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 10:27:31 by ddiniz            #+#    #+#             */
-/*   Updated: 2022/05/09 22:44:12 by ddiniz           ###   ########.fr       */
+/*   Updated: 2022/05/13 21:50:40 by ddiniz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "get_next_line.h"
 
-size_t	ft_lenstr(const char *str)
+size_t	ft_strlen(const char *str)
 {
 	size_t	len;
 
 	len = 0;
-	while (*str)
-	{
+	while (str && *str++)
 		len++;
-		str++;
-	}
 	return (len);
 }
 
-void	ft_cpylstr(const char *dest, const char *src, size_t size)
+char	*ft_strchr(const char *str, char c)
 {
-	while (size > 0)
+	if (str != NULL)
 	{
-		*(char *)dest = *(char *)src;
-		dest++;
-		src++;
-		size--;
+		while (*str && *str != c)
+			str++;
+		if (*str == c)
+			return ((char *)str);
 	}
-	*(char *)dest = '\0';
+	return (NULL);
 }
 
-char	*ft_joinstr(const char *dest, const char *src)
+size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 {
-	char	*join;
-	char	*join_start;
-	size_t	total_size;
+	size_t	len_src;
 
-	total_size = ft_lenstr(dest) + ft_lenstr(src) + 1;
-	join = (char *)malloc(total_size * sizeof(char));
-	if (!join)
-		return (0);
-	join_start = join;
-	while (*dest)
+	len_src = ft_strlen(src);
+	if (size--)
 	{
-		*join = *(char *)dest;
-		dest++;
-		join++;
+		while (size-- && *src)
+			*dest++ = *src++;
+		*dest = '\0';
 	}
-	while (*src)
+	return (len_src);
+}
+
+void	new_str(char **line, const char *buffer, size_t size)
+{
+	char	*aux;
+	size_t	len_line;
+
+	aux = NULL;
+	if (buffer[0])
 	{
-		*join = *(char *)src;
-		src++;
-		join++;
+		len_line = ft_strlen(*line);
+		aux = (char *)malloc((len_line + size + 1) * sizeof(char));
+		if (aux != NULL)
+		{
+			ft_strlcpy(aux, *line, len_line + 1);
+			ft_strlcpy(aux + len_line, buffer, size + 1);
+		}
 	}
-	*join = '\0';
-	return (join_start);
+	free(*line);
+	*line = aux;
 }

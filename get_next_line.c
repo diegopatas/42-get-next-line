@@ -6,57 +6,35 @@
 /*   By: ddiniz <ddiniz@student.42sp.org.br>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 21:42:25 by ddiniz            #+#    #+#             */
-/*   Updated: 2022/05/10 23:41:05 by ddiniz           ###   ########.fr       */
+/*   Updated: 2022/05/13 21:48:00 by ddiniz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include <unistd.h>
 #include "get_next_line.h"
 
 char	*get_next_line(int fd)
 {
-	static char		buff[BUFFER_SIZE];
-	static size_t	id_scan;
-	static size_t	id_start;
-	char			*line;
-	char			*aux;
+	static char	buff[BUFFER_SIZE + 1];
+	char		*line;
+	char		*aux;
+	ssize_t		n_read;
 
-	line = "";
-	aux = line;
-	if (id_scan == 0 || id_scan >= BUFFER_SIZE - 1)
+	line = NULL;
+	n_read = -1;
+	while (!ft_strchr(line, '\n') && n_read != 0)
 	{
-		if (read(fd, buff, BUFFER_SIZE) == -1)
+		aux = ft_strchr(buff, '\n');
+		if (aux++)
+		{
+			new_str(&line, buff, aux - buff);
+			ft_strlcpy(buff, aux, ft_strlen(aux) + 1);
+			continue ;
+		}
+		new_str(&line, buff, ft_strlen(buff));
+		n_read = read(fd, buff, BUFFER_SIZE);
+		if (n_read < 0)
 			return (NULL);
-		id_scan = 0;
-	}
-	id_start = id_scan;
-	if (buff[id_scan++] == '\n')
-		return ("\n");
-	while (id_scan < BUFFER_SIZE)
-	{
-		if (buff[id_scan] == '\n') //first char == '\n': ok; next char == '\n': ok
-		{
-			aux = (char *)malloc((id_scan - id_start + 2) * sizeof(char));
-			ft_cpylstr(aux, &buff[id_start], (id_scan - id_start + 1));
-			line = ft_joinstr(line, aux);
-			free(aux);
-			aux = NULL;
-			id_scan++;
-			break ;
-		}
-		else if (id_scan == BUFFER_SIZE - 1)
-		{
-			aux = (char *)malloc((id_scan - id_start + 2) * sizeof(char));
-			ft_cpylstr(aux, &buff[id_start], (id_scan - id_start + 1));
-			line = ft_joinstr(line, aux);
-			free(aux);
-			aux = NULL;
-			read(fd, buff, BUFFER_SIZE);
-			id_scan = 0;
-		}
-		else
-			id_scan++;
+		buff[n_read] = '\0';
 	}
 	return (line);
 }

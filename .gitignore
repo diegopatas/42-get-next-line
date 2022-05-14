@@ -2,9 +2,10 @@
 test*
 Makefile*
 *test*
-/unittest
+/unity
 *.out
 main*
 unittest*
 gnl_v*
 *.txt
+.gnl.c
